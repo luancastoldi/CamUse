@@ -13,20 +13,20 @@ export default function Index() {
 
     useEffect(() => {
         (async () => {
-             const { status } = await Camera.requestPermissionsAsync();
-             setHasPermission(status === 'granted');
-        })(); 
-     }, []);  
+            const { status } = await Camera.requestPermissionsAsync();
+            setHasPermission(status === 'granted');
+        })();
+    }, []);
 
-    if(hasPermission === null){
-        return <View/>
+    if (hasPermission === null) {
+        return <View />
     }
-    if(hasPermission === false){
+    if (hasPermission === false) {
         return <Text>Acesso Negado !</Text>
     }
 
-    async function takePicture(){
-        if(camRef){
+    async function takePicture() {
+        if (camRef) {
             const data = await camRef.current.takePictureAsync();
             setCapturedPhoto(data.uri)
             setOpen(true);
@@ -37,53 +37,53 @@ export default function Index() {
     return (
         <SafeAreaView style={styles.container}>
             <Camera
-                style={{flex: 1}}
+                style={{ flex: 1 }}
                 type={type}
                 ref={camRef}
-                >
-                <View style={styles.flip}>
-                    <TouchableOpacity
-                    style={{marginBottom: 30}}
+            >
+            </Camera>
+
+            <View style={{ flexDirection: 'row', justifyContent: 'space-around', backgroundColor: 'white' }}>
+                <TouchableOpacity
                     onPress={() => {
                         setType(
                             type === Camera.Constants.Type.back
-                            ? Camera.Constants.Type.front
-                            : Camera.Constants.Type.back
+                                ? Camera.Constants.Type.front
+                                : Camera.Constants.Type.back
                         )
                     }}>
-                    <MaterialIcons name="flip-camera-android" size={30} color="white" />          
-                    </TouchableOpacity>
+                    <MaterialIcons name="flip-camera-android" size={60} color="blue" />
+                </TouchableOpacity>
+
 
                 <TouchableOpacity
-                onPress={() =>{
-                    takePicture()
-                }}>
-                    <MaterialIcons name="camera-alt" size={30} color="white" />
+                    onPress={() => {
+                        takePicture()
+                    }}>
+                    <MaterialIcons name="camera-alt" size={60} color="blue" />
                 </TouchableOpacity>
-                </View>            
-            </Camera>
+            </View>
 
-        { capturedPhoto &&
-        <Modal
-        animationType="slide"
-        transparent={false}
-        visible={open}
-         > 
-         <View style={{flex: 1, justifyContent: 'center', alignItems: 'center', margin: 20}}>
-            <TouchableOpacity onPress={() => {
-                setOpen(false)
-            }}>
-                    <MaterialIcons name="close" size={30} color="black" />
-            </TouchableOpacity>
-         </View>
+            { capturedPhoto &&
+                <Modal
+                    animationType="slide"
+                    transparent={false}
+                    visible={open}
+                >
+                    <View style={styles.photoOk}>
+                        <TouchableOpacity
+                            onPress={() => {
+                                setOpen(false)
+                            }}>
+                            <MaterialIcons name="close" size={50} color="blue" />
+                        </TouchableOpacity>
 
-        <Image
-            style={{width: '100%', height: 300, marginBottom: 100}}
-            source={{uri: capturedPhoto}}
-        
-        />
-
-         </Modal> }
+                        <Image
+                            style={styles.imageRight}
+                            source={{ uri: capturedPhoto }}
+                        />
+                    </View>
+                </Modal>}
 
         </SafeAreaView>
     )
@@ -99,6 +99,19 @@ const styles = StyleSheet.create({
     flip: {
         flexDirection: 'column',
         marginTop: 300,
+    },
+    photoOk: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        margin: 40
+    },
+    imageRight: {
+        width: '100%',
+        height: '100%',
+        borderColor: 'blue',
+        borderWidth: 3,
+        borderRadius: 7
     }
 })
 
