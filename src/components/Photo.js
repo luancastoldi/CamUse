@@ -2,10 +2,8 @@ import React, { useState, useEffect, useRef } from 'react'
 import { Text, StyleSheet, View, SafeAreaView, Image, TouchableOpacity, Modal } from 'react-native'
 import { Camera } from 'expo-camera'
 import { MaterialIcons } from '@expo/vector-icons'
-import * as Permissions from 'expo-permissions';
-import * as MediaLibrary from 'expo-media-library';
 
-export default function Index() {
+export default function Photo() {
 
     const camRef = useRef(null)
     const [type, setType] = useState(Camera.Constants.Type.back);
@@ -13,19 +11,9 @@ export default function Index() {
     const [capturedPhoto, setCapturedPhoto] = useState(null);
     const [open, setOpen] = useState(false);
 
-    const [flash, setFlash] = useState(Camera.Constants.FlashMode.off)
-    const [ativado, setAtivado] = useState("blue")
-
     useEffect(() => {
         (async () => {
             const { status } = await Camera.requestPermissionsAsync();
-            setHasPermission(status === 'granted');
-        })();
-    }, []);
-
-    useEffect(() => {
-        (async () => {
-            const { status } = await Permissions.askAsync(Permissions.CAMERA_ROLL)
             setHasPermission(status === 'granted');
         })();
     }, []);
@@ -46,32 +34,12 @@ export default function Index() {
         }
     }
 
-    async function savePhoto(){
-        const asset = await MediaLibrary.createAssetAsync(capturedPhoto)
-        .then(() =>{
-            alert('Salvado :)')
-        })
-        .catch(error => {
-            console.log('err', error)
-        })
-    }
-
-    async function onFlash(){
-        if(flash === Camera.Constants.FlashMode.on){
-            setFlash(Camera.Constants.FlashMode.off)
-            setAtivado("blue")
-        }else{
-                setFlash(Camera.Constants.FlashMode.on)
-                  setAtivado("yellow")
-            }
-        }
     return (
         <SafeAreaView style={styles.container}>
             <Camera
                 style={{ flex: 1, width: 400 }}
                 type={type}
                 ref={camRef}
-                flashMode={flash}
             >
             </Camera>
 
@@ -94,13 +62,6 @@ export default function Index() {
                     }}>
                     <MaterialIcons name="camera-alt" size={60} color="blue" />
                 </TouchableOpacity>
-
-                <TouchableOpacity
-                    onPress={() => {
-                        onFlash()
-                    }}>
-                   <MaterialIcons name="flash-on" size={60} color={ativado} />
-                </TouchableOpacity>
             </View>
 
             { capturedPhoto &&
@@ -110,20 +71,13 @@ export default function Index() {
                     visible={open}
                 >
                     <View style={styles.photoOk}>
+                        <TouchableOpacity
+                            onPress={() => {
+                                setOpen(false)
+                            }}>
+                            <MaterialIcons name="close" size={50} color="blue" />
+                        </TouchableOpacity>
 
-                        <View style={{ flexDirection: 'row', margin: 10 }}>
-                            <TouchableOpacity
-                                onPress={() => savePhoto()}>
-                                <MaterialIcons name="file-download" size={50} color="blue" />
-                            </TouchableOpacity>
-
-                            <TouchableOpacity
-                                onPress={() => {
-                                    setOpen(false)
-                                }}>
-                                <MaterialIcons name="close" size={50} color="red" />
-                            </TouchableOpacity>
-                        </View>
                         <Image
                             style={styles.imageRight}
                             source={{ uri: capturedPhoto }}
