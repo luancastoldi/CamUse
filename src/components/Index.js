@@ -72,6 +72,7 @@ export default function Index() {
                 type={type}
                 ref={camRef}
                 flashMode={flash}
+                
             >
             </Camera>
 
@@ -153,7 +154,7 @@ const styles = StyleSheet.create({
         margin: 40
     },
     imageRight: {
-        width: '100%',
+        width: '130%',
         height: '100%',
         borderColor: 'blue',
         borderWidth: 3,
